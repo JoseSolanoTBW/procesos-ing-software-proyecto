@@ -1,5 +1,14 @@
+/* 
+Paleta de colores
+#041C32
+#04293A
+#064663
+#ECB365 */
+
 .App {
   text-align: center;
+  background-color: #121212;
+  color: rgba(255, 255, 255, 0.87);
 }
 
 .App-logo {
@@ -26,6 +35,12 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.centerItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 @keyframes App-logo-spin {
