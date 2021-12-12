@@ -15,4 +15,11 @@ export interface TableRiesgo {
   riesgo: string;
   impacto: number;
   probabilidad: number;
+  proyectoId: number;
+  proyecto: string;
+}
+
+export interface Proyecto {
+  id: number;
+  nombre: string;
 }

@@ -50,17 +50,34 @@ export const tablaRiesgos = [
     riesgo: "Fallo en la conexion a servidores",
     impacto: 6,
     probabilidad: 60,
+    proyectoId: 1,
+    proyecto: "Proyecto 1",
   },
   {
     id: 2,
     riesgo: "Errores gramaticales en los textos del proyecto",
     impacto: 3,
     probabilidad: 90,
+    proyectoId: 1,
+    proyecto: "Proyecto 1",
   },
   {
     id: 3,
     riesgo: "Retraso en el release del proyecto",
     impacto: 9,
     probabilidad: 30,
+    proyectoId: 2,
+    proyecto: "Proyecto 2",
   },
+];
+
+export const proyectos = [
+  {
+    id: 1,
+    nombre: "Proyecto 1",
+  },
+  {
+    id: 2,
+    nombre: "Proyecto 2",
+  }
 ];

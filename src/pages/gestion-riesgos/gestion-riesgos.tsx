@@ -6,16 +6,33 @@ import {
   probabilidades,
   tablaRiesgos,
   riesgos,
+  proyectos,
 } from "../../utils/constants";
 import RiesgoForm from "./components/riesgo-form";
 import TablasValores from "./components/tablas-valores";
 import "./gestion-riesgos.css";
 import "@inovua/reactdatagrid-enterprise/index.css";
 import "@inovua/reactdatagrid-community/theme/default-dark.css";
-import { TableRiesgo } from "../../utils/types";
+import { TableRiesgo, Proyecto } from "../../utils/types";
 
 const columns = [
-  { name: "riesgo", header: "Riesgo", minWidth: 50, defaultFlex: 2 },
+  { 
+    name: "riesgo", 
+    header: "Riesgo", 
+    minWidth: 50, 
+    defaultFlex: 2,
+  } ,
+  { 
+    name: "proyecto",
+    header: "Proyecto",
+    minWidth: 50, 
+    defaultFlex: 2,
+    render: ({ data }: { data: TableRiesgo }) =>{
+    console.log(data);
+    var result = proyectos.filter(p => p.id == data.proyectoId);
+    console.log(result);
+    return <span>{result[0].nombre}</span>;
+  }, },
   { name: "impacto", header: "Impacto", maxWidth: 1000, defaultFlex: 1 },
   {
     name: "probabilidad",
@@ -51,11 +68,13 @@ const GestionRiesgos = () => {
   // Rows are stored in the state.
   const [rows, setRows] = useState<TableRiesgo[]>(tablaRiesgos);
   const [gestionImpactos, setImpactos] = useState(impactos);
+  const [gestionProyectos, setProyectos] = useState(proyectos);
   const [validated, setValidated] = useState(false);
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
     event.stopPropagation();
     const form = event.currentTarget as any;
+    console.log(form)
     if (form.checkValidity()) {
       setRows((rows) => [
         ...rows,
@@ -64,6 +83,8 @@ const GestionRiesgos = () => {
           impacto: form.impacto.value,
           probabilidad: form.probabilidad.value,
           riesgo: form.riesgo.value,
+          proyectoId: form.proyecto.value,
+          proyecto: ""
         },
       ]);
       form.reset();
@@ -80,6 +101,7 @@ const GestionRiesgos = () => {
         validated={validated}
         gestionImpactos={gestionImpactos}
         onSubmit={onSubmit}
+        gestionProyectos={gestionProyectos}
       />
 
       <ReactDataGrid
