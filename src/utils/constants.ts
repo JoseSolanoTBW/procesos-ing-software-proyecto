@@ -16,7 +16,7 @@ export const impactos = [
 export const riesgos = [
   {
     label: "Alto",
-    min: 9,
+    min: 4.5,
     color: "#A13333",
   },
   {
@@ -43,3 +43,24 @@ const generarProbabilidades = () => {
 };
 
 export const probabilidades = generarProbabilidades();
+
+export const tablaRiesgos = [
+  {
+    id: 1,
+    riesgo: "Fallo en la conexion a servidores",
+    impacto: 6,
+    probabilidad: 60,
+  },
+  {
+    id: 2,
+    riesgo: "Errores gramaticales en los textos del proyecto",
+    impacto: 3,
+    probabilidad: 90,
+  },
+  {
+    id: 3,
+    riesgo: "Retraso en el release del proyecto",
+    impacto: 9,
+    probabilidad: 30,
+  },
+];

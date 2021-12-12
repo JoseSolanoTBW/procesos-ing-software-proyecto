@@ -15,7 +15,7 @@ const RiesgoForm = ({
   validated,
 }: RiesgoFormProps) => (
   <Form noValidate validated={validated} onSubmit={onSubmit}>
-    <Row xs={6}>
+    <Row>
       <Col>
         <Form.Group className="mb-3" controlId="riesgo">
           <Form.Label>Riesgo</Form.Label>

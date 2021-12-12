@@ -1,9 +1,55 @@
 import React, { FormEvent, useState } from "react";
+import ReactDataGrid from "@inovua/reactdatagrid-community";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import { impactos, probabilidades } from "../../utils/constants";
+import {
+  impactos,
+  probabilidades,
+  tablaRiesgos,
+  riesgos,
+} from "../../utils/constants";
 import RiesgoForm from "./components/riesgo-form";
+import TablasValores from "./components/tablas-valores";
 import "./gestion-riesgos.css";
+import "@inovua/reactdatagrid-enterprise/index.css";
+import "@inovua/reactdatagrid-community/theme/default-dark.css";
+import { TableRiesgo } from "../../utils/types";
+
+const columns = [
+  { name: "riesgo", header: "Riesgo", minWidth: 50, defaultFlex: 2 },
+  { name: "impacto", header: "Impacto", maxWidth: 1000, defaultFlex: 1 },
+  {
+    name: "probabilidad",
+    header: "Probabilidad",
+    maxWidth: 1000,
+    defaultFlex: 1,
+  },
+
+  {
+    name: "probImpact",
+    header: "Probabilidad x Impacto",
+    maxWidth: 1000,
+    defaultFlex: 1,
+    render: ({ data }: { data: TableRiesgo }) =>
+      (data.impacto * (data.probabilidad / 100)).toFixed(2),
+  },
+  {
+    name: "rango",
+    header: "Rango",
+    maxWidth: 1000,
+    defaultFlex: 1,
+    render: ({ data }: { data: TableRiesgo }) => {
+      const resultado = data.impacto * (data.probabilidad / 100);
+      let rango = riesgos.find((riesgo) => {
+        return resultado > riesgo.min && resultado < (riesgo.max || 9000);
+      });
+      return <span style={{ color: rango?.color }}>{rango?.label}</span>;
+    },
+  },
+];
+
 const GestionRiesgos = () => {
+  // Rows are stored in the state.
+  const [rows, setRows] = useState<TableRiesgo[]>(tablaRiesgos);
   const [gestionImpactos, setImpactos] = useState(impactos);
   const [validated, setValidated] = useState(false);
   const onSubmit = (event: FormEvent) => {
@@ -11,16 +57,37 @@ const GestionRiesgos = () => {
     event.stopPropagation();
     const form = event.currentTarget as any;
     if (form.checkValidity()) {
-      //add to the table
+      setRows((rows) => [
+        ...rows,
+        {
+          id: Date.now(),
+          impacto: form.impacto.value,
+          probabilidad: form.probabilidad.value,
+          riesgo: form.riesgo.value,
+        },
+      ]);
+      form.reset();
+      setValidated(false);
+    } else {
+      setValidated(true);
     }
-    setValidated(true);
   };
+
   return (
-    <Container fluid>
+    <Container fluid className="container">
+      <TablasValores />
       <RiesgoForm
         validated={validated}
         gestionImpactos={gestionImpactos}
         onSubmit={onSubmit}
+      />
+
+      <ReactDataGrid
+        style={{ minHeight: 400 }}
+        columns={columns}
+        theme="default-dark"
+        dataSource={rows}
+        idProperty="id"
       />
     </Container>
   );

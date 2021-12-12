@@ -9,3 +9,10 @@ export interface Riesgo {
   max?: number;
   color: string;
 }
+
+export interface TableRiesgo {
+  id: number;
+  riesgo: string;
+  impacto: number;
+  probabilidad: number;
+}
