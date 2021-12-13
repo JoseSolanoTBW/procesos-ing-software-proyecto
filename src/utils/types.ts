@@ -23,3 +23,8 @@ export interface Proyecto {
   id: number;
   nombre: string;
 }
+
+export interface ValorGanadoActividad {
+  actividad: string;
+  [index: string]: number | string;
+}

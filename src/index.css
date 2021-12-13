@@ -1,8 +1,10 @@
-html,
-body,
-#root,
-#root > div {
+html {
   height: 100%;
+}
+body {
+  min-height: 100%;
+  background-color: #121212 !important;
+  color: rgba(255, 255, 255, 0.87);
 }
 
 body {
