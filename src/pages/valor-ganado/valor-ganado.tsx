@@ -6,52 +6,52 @@ import AddForm from "./components/add-form";
 import NombreProyecto from "./components/nombre-proyecto";
 import { baseColumns, baseRows } from "./valor-ganado-base";
 import "./valor-ganado.css";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 const ValorGanado = () => {
 
-  const data = [
+  var data = [
     {
-      name: 'Page A',
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
+      name: 'Semana 1',
+      valorGanado: 4000,
+      valorEstimado: 2400,
+      valorReal: 3400,
     },
     {
-      name: 'Page B',
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
+      name: 'Semana 2',
+      valorGanado: 3000,
+      valorEstimado: 1398,
+      valorReal: 4210,
     },
     {
-      name: 'Page C',
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
+      name: 'Semana 3',
+      valorGanado: 2000,
+      valorEstimado: 9800,
+      valorReal: 3290,
     },
     {
-      name: 'Page D',
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
+      name: 'Semana 4',
+      valorGanado: 2780,
+      valorEstimado: 3908,
+      valorReal: 4000,
     },
     {
-      name: 'Page E',
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
+      name: 'Semana 5',
+      valorGanado: 1890,
+      valorEstimado: 4800,
+      valorReal: 3181,
     },
     {
-      name: 'Page F',
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
+      name: 'Semana 6',
+      valorGanado: 2390,
+      valorEstimado: 3800,
+      valorReal: 3500,
     },
     {
-      name: 'Page G',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
+      name: 'Semana 7',
+      valorGanado: 3490,
+      valorEstimado: 4300,
+      valorReal: 3100,
     },
   ];
 
@@ -188,8 +188,9 @@ const ValorGanado = () => {
           <YAxis />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-          <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+          <Line type="monotone" dataKey="valorGanado" stroke="#8884d8" activeDot={{ r: 8 }} />
+          <Line type="monotone" dataKey="valorEstimado" stroke="#82ca9d" />
+          <Line type="monotone" dataKey="valorReal" stroke="#DA302B" />
         </LineChart>
     </Container>
   );
