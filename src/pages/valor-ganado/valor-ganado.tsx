@@ -41,9 +41,8 @@ const ValorGanado = () => {
     setValoresPlaneados((prev) => [...prev, { id: prev.length, actividad }]);
     setValoresReales((prev) => [...prev, { id: prev.length, actividad }]);
   };
-
+  //hacer calculos aqui
   useEffect(() => {
-    console.log("trigger");
     const pv = planeado
       .map((plan) => plan.total)
       .reduce(
