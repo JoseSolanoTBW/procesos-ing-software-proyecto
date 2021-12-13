@@ -5,3 +5,7 @@
 .nombreProyecto:focus-visible {
   background-color: #313943;
 }
+
+.recharts-legend-wrapper {
+  bottom: 65px !important;
+}
