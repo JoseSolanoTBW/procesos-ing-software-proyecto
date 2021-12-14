@@ -5,7 +5,21 @@
 .nombreProyecto:focus-visible {
   background-color: #313943;
 }
-
+.select-editor {
+  color: rgba(255, 255, 255, 0.87) !important;
+  background-color: #313943 !important;
+}
 .recharts-legend-wrapper {
   bottom: 65px !important;
+}
+
+.table-container {
+  margin: 20px 0;
+}
+
+.calculo {
+  color: #ecb365;
+}
+.calculo-2 {
+  color: #add7ff;
 }
