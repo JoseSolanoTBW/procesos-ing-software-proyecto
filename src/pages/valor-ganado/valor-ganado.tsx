@@ -32,51 +32,6 @@ import {
 import { probabilidades } from "../../utils/constants";
 
 const ValorGanado = () => {
-  var data = [
-    {
-      name: "Semana 1",
-      valorGanado: 4000,
-      valorEstimado: 2400,
-      valorReal: 3400,
-    },
-    {
-      name: "Semana 2",
-      valorGanado: 3000,
-      valorEstimado: 1398,
-      valorReal: 4210,
-    },
-    {
-      name: "Semana 3",
-      valorGanado: 2000,
-      valorEstimado: 9800,
-      valorReal: 3290,
-    },
-    {
-      name: "Semana 4",
-      valorGanado: 2780,
-      valorEstimado: 3908,
-      valorReal: 4000,
-    },
-    {
-      name: "Semana 5",
-      valorGanado: 1890,
-      valorEstimado: 4800,
-      valorReal: 3181,
-    },
-    {
-      name: "Semana 6",
-      valorGanado: 2390,
-      valorEstimado: 3800,
-      valorReal: 3500,
-    },
-    {
-      name: "Semana 7",
-      valorGanado: 3490,
-      valorEstimado: 4300,
-      valorReal: 3100,
-    },
-  ];
-
   const [calculos, setCalculos] = useState<{
     ac: number;
     pv: number;
@@ -86,6 +41,7 @@ const ValorGanado = () => {
     nombre: "Digite el nombre del proyecto aqui",
     edit: false,
   });
+  const [data, setData] = useState<any>();
   const [semanas, setSemanas] = useState(baseColumns);
   const [avanceSemanas, setAvanceSemanas] = useState(baseColumnsAvance);
   const [planeado, setValoresPlaneados] = useState<ValorGanadoActividad[]>(
@@ -161,15 +117,15 @@ const ValorGanado = () => {
         total,
       ];
     });
-    setListaCorteSemana(semanas.slice(2, semanas.length - 1));
   };
 
   const agregarActividad = (actividad: string) => {
     setValoresPlaneados((prev) => [...prev, { id: prev.length, actividad }]);
     setValoresReales((prev) => [...prev, { id: prev.length, actividad }]);
+    setAvance((prev) => [...prev, { id: prev.length, actividad }]);
   };
 
-  const calcularAC = () => {
+  const calcularEv = () => {
     const evArray: any[] = [];
     avance.forEach((tarea, index) => {
       let acRow = { total: 0 };
@@ -186,7 +142,6 @@ const ValorGanado = () => {
       acRow.total = total;
       evArray.push(acRow);
     });
-    console.log(evArray);
 
     const ev = evArray
       .map((plan) => Number(plan.total))
@@ -195,26 +150,63 @@ const ValorGanado = () => {
     setEvRows(evArray);
     setCalculos((prev) => ({ ...prev, ev }));
   };
-  console.log(listaCorteSemana);
+
   //hacer calculos aqui
-  useEffect(() => {
-    calcularAC();
-  }, [corteSemana]);
-  useEffect(() => {
-    const pv = planeado
-      .map((plan) => Number(plan.total))
-      .reduce((accumulator, item) => (accumulator || 0) + (item || 0));
-    setCalculos((prev) => ({ ...prev, pv }));
-  }, [planeado]);
-  useEffect(() => {
-    const ac = real
-      .map((plan) => Number(plan.total))
-      .reduce((accumulator, item) => (accumulator || 0) + (item || 0));
 
-    //@ts-ignore
-    setCalculos((prev) => ({ ...prev, ac }));
-  }, [real]);
+  const calcularValorSemana = (
+    semana: string,
+    array: any[],
+    acumulado: number
+  ) => {
+    let row = array
+      .map((plan) => {
+        return Number(plan[semana]);
+      })
+      .reduce((accumulator, item) => accumulator + item);
+    row = row + acumulado;
 
+    return row;
+  };
+
+  useEffect(() => {
+    calcularEv();
+  }, [avance]);
+  useEffect(() => {
+    setListaCorteSemana(semanas.slice(2, semanas.length - 1));
+  }, [semanas]);
+
+  useEffect(() => {
+    let pvAcumulado = 0;
+    let acAcumulado = 0;
+    let evAcumulado = 0;
+    let chart: any = [];
+    let flag = false;
+    let pv = 0;
+    let ac = 0;
+    let ev = 0;
+    listaCorteSemana.forEach((semana) => {
+      if (!flag) {
+        pv = calcularValorSemana(semana.name, planeado, pvAcumulado);
+        ac = calcularValorSemana(semana.name, real, acAcumulado);
+        ev = calcularValorSemana(semana.name, evRows, evAcumulado);
+        pvAcumulado = pv;
+        acAcumulado = ac;
+        evAcumulado = ev;
+        if (semana.name === corteSemana) flag = true;
+        chart.push({
+          name: semana.header,
+          valorEstimado: pv,
+          valorGanado: ev,
+          valorReal: ac,
+        });
+      }
+      if (semana.name === corteSemana) {
+        flag = true;
+        setCalculos({ pv, ac, ev });
+        setData(chart);
+      }
+    });
+  }, [corteSemana, planeado, real, evRows]);
   const onEditPlanComplete = useCallback(
     ({ value = "", columnId = "", rowId = 0 }) => {
       //actualiza el valor
@@ -245,7 +237,6 @@ const ValorGanado = () => {
           total = total + (Number(data[rowId][key]) || 0);
         }
       });
-      console.log(total);
 
       data[rowId].total = total;
       setValoresReales(data);
@@ -265,7 +256,6 @@ const ValorGanado = () => {
           total = total + (Number(data[rowId][key]) || 0);
         }
       });
-      console.log(total, "avance");
 
       data[rowId].total = total;
       setAvance(data);
@@ -297,8 +287,6 @@ const ValorGanado = () => {
           idProperty="id"
         />
       </div>
-
-      <p>PV: {calculos.pv}</p>
       <div className="table-container">
         <h3>Valores Reales</h3>
         <ReactDataGrid
