@@ -43,7 +43,7 @@ const ValorGanado = () => {
   });
   const [data, setData] = useState<any>();
   const [semanas, setSemanas] = useState(baseColumns);
-  const [avanceSemanas, setAvanceSemanas] = useState(baseColumnsAvance);
+  const [avanceSemanas, setAvanceSemanas] = useState(baseColumnsAvance());
   const [planeado, setValoresPlaneados] = useState<ValorGanadoActividad[]>(
     baseRows()
   );
@@ -58,65 +58,72 @@ const ValorGanado = () => {
     baseRowsAvance()
   );
   const [evRows, setEvRows] = useState(baseEvRows);
-
+  const semanasasdfa = avanceSemanas;
   const agregarSemanas = () => {
-    setSemanas((prev: any) => {
-      const total = prev.pop();
-      return [
-        ...prev,
-        {
-          name: `sem${prev.length - 1}`,
-          header: `Semana ${prev.length - 1}`,
-          maxWidth: 1000,
-          defaultFlex: 1,
-          type: "number",
-          render: ({ value }: { value: number }) => value || 0,
-        },
-        total,
-      ];
-    });
+    console.log(avanceSemanas);
+    const semanasInfo = [...semanas];
+    const avanceSemanaInfo = [...avanceSemanas];
 
-    setAvanceSemanas((prev: any) => {
-      const total = prev.pop();
-      return [
-        ...prev,
-        {
-          name: `sem${prev.length - 1}`,
-          header: `Semana ${prev.length - 1}`,
-          maxWidth: 1000,
-          defaultFlex: 1,
-          type: "number",
-          render: ({ value }: { value: number }) => `${value || 0}%`,
-          renderEditor: (editorProps: any) => {
-            return (
-              <FormSelect
-                tabIndex={0}
-                className="select-editor"
-                autoFocus
-                onChange={(event) => {
-                  editorProps.onChange(event.target.value);
-                }}
-                onBlur={editorProps.onComplete}
-                onKeyDown={(e) => {
-                  if (e.key == "Tab") {
-                    editorProps.onTabNavigation(
-                      true /*complete navigation?*/,
-                      e.shiftKey ? -1 : 1 /*backwards of forwards*/
-                    );
-                  }
-                }}
-                value={editorProps.value}
-              >
-                {probabilidades.map((probabilidad) => (
-                  <option value={probabilidad}>{probabilidad}%</option>
-                ))}
-              </FormSelect>
-            );
-          },
+    setSemanas(addSemana(semanasInfo));
+    setAvanceSemanas(addAvanceSemana(avanceSemanaInfo));
+  };
+
+  const addSemana = (prev: any) => {
+    const total = prev.pop();
+    return [
+      ...prev,
+      {
+        name: `sem${prev.length - 1}`,
+        header: `Semana ${prev.length - 1}`,
+        maxWidth: 1000,
+        defaultFlex: 1,
+        type: "number",
+        render: ({ value }: { value: number }) => value || 0,
+      },
+      total,
+    ];
+  };
+
+  const addAvanceSemana = (semanasPrev: any) => {
+    const total = semanasPrev.pop();
+    return [
+      ...semanasPrev,
+      {
+        name: `sem${semanasPrev.length - 1}`,
+        header: `Semana ${semanasPrev.length - 1}`,
+        maxWidth: 1000,
+        defaultFlex: 1,
+        type: "number",
+        render: ({ value }: { value: number }) => `${value || 0}%`,
+        renderEditor: (editorProps: any) => {
+          return (
+            <FormSelect
+              tabIndex={0}
+              className="select-editor"
+              autoFocus
+              onChange={(event) => {
+                editorProps.onChange(event.target.value);
+              }}
+              onBlur={editorProps.onComplete}
+              onKeyDown={(e) => {
+                if (e.key == "Tab") {
+                  editorProps.onTabNavigation(
+                    true /*complete navigation?*/,
+                    e.shiftKey ? -1 : 1 /*backwards of forwards*/
+                  );
+                }
+              }}
+              value={editorProps.value}
+            >
+              {probabilidades.map((probabilidad) => (
+                <option value={probabilidad}>{probabilidad}%</option>
+              ))}
+            </FormSelect>
+          );
         },
-        total,
-      ];
-    });
+      },
+      total,
+    ];
   };
 
   const agregarActividad = (actividad: string) => {
@@ -144,7 +151,7 @@ const ValorGanado = () => {
     });
 
     const ev = evArray
-      .map((plan) => Number(plan.total))
+      .map((plan) => Number(plan.total) || 0)
       .reduce((accumulator, item) => (accumulator || 0) + (item || 0));
 
     setEvRows(evArray);
@@ -160,7 +167,7 @@ const ValorGanado = () => {
   ) => {
     let row = array
       .map((plan) => {
-        return Number(plan[semana]);
+        return Number(plan[semana]) || 0;
       })
       .reduce((accumulator, item) => accumulator + item);
     row = row + acumulado;
@@ -264,7 +271,7 @@ const ValorGanado = () => {
   );
 
   const { pv, ac, ev } = calculos;
-
+  console.log(avanceSemanas, "12312312");
   return (
     <Container>
       <NombreProyecto

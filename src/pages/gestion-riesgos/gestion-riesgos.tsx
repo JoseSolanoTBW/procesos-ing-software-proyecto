@@ -1,6 +1,6 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useCallback, useState } from "react";
 import ReactDataGrid from "@inovua/reactdatagrid-community";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, FormSelect, Row } from "react-bootstrap";
 import {
   impactos,
   probabilidades,
@@ -28,9 +28,7 @@ const columns = [
     minWidth: 50,
     defaultFlex: 2,
     render: ({ data }: { data: TableRiesgo }) => {
-      console.log(data);
       var result = proyectos.filter((p) => p.id == data.proyectoId);
-      console.log(result);
       return <span>{result[0].nombre}</span>;
     },
   },
@@ -40,6 +38,32 @@ const columns = [
     header: "Probabilidad",
     maxWidth: 1000,
     defaultFlex: 1,
+    renderEditor: (editorProps: any) => {
+      return (
+        <FormSelect
+          tabIndex={0}
+          className="select-editor"
+          autoFocus
+          onChange={(event) => {
+            editorProps.onChange(event.target.value);
+          }}
+          onBlur={editorProps.onComplete}
+          onKeyDown={(e) => {
+            if (e.key == "Tab") {
+              editorProps.onTabNavigation(
+                true /*complete navigation?*/,
+                e.shiftKey ? -1 : 1 /*backwards of forwards*/
+              );
+            }
+          }}
+          value={editorProps.value}
+        >
+          {probabilidades.map((probabilidad) => (
+            <option value={probabilidad}>{probabilidad}%</option>
+          ))}
+        </FormSelect>
+      );
+    },
   },
 
   {
@@ -47,12 +71,14 @@ const columns = [
     header: "Probabilidad x Impacto",
     maxWidth: 1000,
     defaultFlex: 1,
+    editable: false,
     render: ({ data }: { data: TableRiesgo }) =>
       (data.impacto * (data.probabilidad / 100)).toFixed(2),
   },
   {
     name: "rango",
     header: "Rango",
+    editable: false,
     maxWidth: 1000,
     defaultFlex: 1,
     render: ({ data }: { data: TableRiesgo }) => {
@@ -94,6 +120,18 @@ const GestionRiesgos = () => {
     }
   };
 
+  const onEditComplete = useCallback(
+    ({ value = "", columnId = "", rowId = 0 }) => {
+      //actualiza el valor
+      const data = [...rows];
+      //@ts-ignore
+      data[rowId - 1][columnId] = value;
+
+      setRows(data);
+    },
+    [rows]
+  );
+
   return (
     <Container fluid className="container">
       <TablasValores />
@@ -105,6 +143,8 @@ const GestionRiesgos = () => {
       />
 
       <ReactDataGrid
+        editable={true}
+        onEditComplete={onEditComplete}
         style={{ minHeight: 400 }}
         columns={columns}
         theme="default-dark"

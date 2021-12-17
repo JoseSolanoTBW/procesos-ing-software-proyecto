@@ -63,7 +63,7 @@ export const baseColumns = [
   },
 ];
 
-export const baseColumnsAvance = [
+export const baseColumnsAvance = () => [
   {
     name: "id",
     header: "Id",
@@ -208,7 +208,6 @@ export const baseColumnsAvance = [
       );
     },
   },
-
   {
     name: "total",
     header: "Total",
